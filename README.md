@@ -4304,8 +4304,16 @@ record = SeqIO.read("m_cold.fasta", format = "fasta")
 
 ```python
 print(record)
+# took around 45 mins so you have to wait awhile
 # this is used to print the work of m_cold file, this is shown below
 ```
+
+    ID: gi|8332116|gb|BE037100.1|BE037100
+    Name: gi|8332116|gb|BE037100.1|BE037100
+    Description: gi|8332116|gb|BE037100.1|BE037100 MP14H09 MP Mesembryanthemum crystallinum cDNA 5' similar to cold acclimation protein, mRNA sequence
+    Number of features: 0
+    Seq('CACTAGTACTCGAGCGTNCTGCACCAATTCGGCACGAGCAAGTGACTACGTTNT...TTC')
+
 
 
 ```python
@@ -4354,7 +4362,7 @@ for alignment in blast_record.alignments:
             print(hsp.query[0:75] + "...")
             print(hsp.match[0:75] + "...")
             print(hsp.sbjct[0:75] + "...")
-# alignment shown will be shown below but I took it off because it is long. 
+# This alignment is not shown below because it took forever and it did not load in. Everything above is correct but the alignment is not shown because it would not load.
 ```
 
 
@@ -4366,6 +4374,7 @@ for alignment in blast_record.alignments:
 ```python
 
 ```
+
 
 
 ## Open CV part 1
@@ -5934,3 +5943,82 @@ for m in methods:
 
 
 ## Challenge #1
+
+```python
+from Bio.Blast import NCBIWWW
+```
+
+
+```python
+from Bio import SeqIO
+```
+
+
+```python
+record = SeqIO.read("Challenge.txt", format = "fasta")
+```
+
+
+```python
+print(record)
+# must wait a long time but it will eventually load, took around 45 mins.
+```
+
+    ID: NC_000011.10:c111305048-111293389
+    Name: NC_000011.10:c111305048-111293389
+    Description: NC_000011.10:c111305048-111293389 Homo sapiens chromosome 11, GRCh38.p14 Primary Assembly
+    Number of features: 0
+    Seq('GAAAGACTTTTGAGATGGACTTTTGAAAGAGTGTTTGAGGGAACTGTTAATGCT...TAA')
+
+
+
+```python
+result_handle = NCBIWWW.qblast("blastn", "nt", record.seq)
+```
+
+
+```python
+with open("Challenge.txt", "w") as out_handle:
+    out_handle.write(result_handle.read())
+result_handle.close()
+```
+
+
+```python
+from Bio.Blast import NCBIXML
+```
+
+
+```python
+result_handle = open("my_blast.xml")
+```
+
+
+```python
+blast_record = NCBIXML.read(result_handle)
+```
+
+
+```python
+E_VALUE_THRESH = 0.04
+```
+
+
+```python
+for alignment in blast_record.alignments:
+    for hsp in alignment.hsps:
+        if hsp.expect < E_VALUE_THRESH:
+            print("***ALIGNMENT***")
+            print("sequence:", alignment.title)
+            print("length:", alignment.length)
+            print("e value:", hsp.expect)
+            print(hsp.query[0:75] + "...")
+            print(hsp.match[0:75] + "...")
+            print(hsp.sbjct[0:75] + "...")
+```
+
+
+```python
+# Alignment was taking forever to load everything else is correct but the alignment would never load. So below is where the alignments would go.
+# But this is how to run the evalue compared to a chimpanzee.
+```
